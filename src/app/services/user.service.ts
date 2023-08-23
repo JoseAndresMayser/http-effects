@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {User} from "../interfaces/user.interface";
 import {map, Observable} from "rxjs";
-import {UserResponse} from "../interfaces/user-response.interface";
-import {ApiResponse} from "../interfaces/api-response.interface";
+import {UserResponse} from "../interfaces/responses/user-response.interface";
+import {ApiResponse} from "../interfaces/responses/api-response.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,19 @@ export class UserService {
             avatar: userResponse.avatar
           })
         ))
+      );
+  }
+
+  public getUser(userId: number): Observable<User> {
+    return this._httpClient.get<ApiResponse<UserResponse>>(`${this._BASE_URL}/users/${userId}`)
+      .pipe(
+        map(response => ({
+          id: response.data.id,
+          email: response.data.email,
+          firstName: response.data.first_name,
+          lastName: response.data.last_name,
+          avatar: response.data.avatar
+        }))
       );
   }
 }
